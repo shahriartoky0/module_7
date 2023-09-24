@@ -1,84 +1,98 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-main(){
-  runApp(const MyApp());
+void main() {
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget{
-  const MyApp({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: HomeScreen(),);
+    return MaterialApp(
+      home: CounterScreen(),
+    );
   }
-
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class CounterScreen extends StatefulWidget {
+  @override
+  _CounterScreenState createState() => _CounterScreenState();
+}
+
+class _CounterScreenState extends State<CounterScreen> {
+  int count = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      count++;
+      if (count >= 5) {
+        _showDialog();
+      }
+    });
+  }
+
+  void _decrementCounter() {
+    setState(() {
+      if (count > 0) {
+        count--;
+      }
+    });
+  }
+
+  void _showDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Button pressed $count times"),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Practise Module 7 '),),
-      body:
-      Center(
+      appBar: AppBar(
+        title: Text('Counter App'),
+      ),
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>Orders())) ;
-            },
-              child: Text('Orders'),),
-            ElevatedButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>Settings())) ;
-            }, child: Text('Setting'))
+          children: <Widget>[
+            Text(
+              'Count:',
+              style: TextStyle(fontSize: 24),
+            ),
+            Text(
+              '$count',
+              style: TextStyle(fontSize: 48),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: _decrementCounter,
+                  child: Text('-',style: TextStyle(fontSize: 30),),
+                ),
+                SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: _incrementCounter,
+                  child: Text('+',style: TextStyle(fontSize: 30)),
+                ),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
 }
-
-class Orders extends StatelessWidget {
-  const Orders({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Orders'),),
-      body:
-      Center(
-        child: ElevatedButton(onPressed: (){
-          // Navigator.pop(context);
-          // Navigator.push(context, MaterialPageRoute(builder: (context)=>Settings())) ;
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Settings())) ;
-
-        },child: Text('Setting'),),
-      ),
-
-    );
-
-  }
-}
-class Settings extends StatelessWidget {
-  const Settings({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Settings'),),
-      body:
-      Center(
-        child: ElevatedButton(onPressed: (){
-          // Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen())) ;
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:(context)=>HomeScreen()), (route) => false);//true kore dile ar aager route theke jabe 
-
-        },child: Text('Home Button'),),
-      ),
-    );
-  }
-}
-
-
