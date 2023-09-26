@@ -1,98 +1,75 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
-void main() {
+void main ()
+{
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: CounterScreen(),
-    );
+    return MaterialApp(title: 'Shopping', home: HomeScreen(),);
   }
+
 }
 
-class CounterScreen extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
+
+
+  List <dynamic> productDetails =[
+    { 'name' : 'Product 1' , 'price' : "100"},
+    { 'name' : 'Product 2' , 'price' : "200"},
+    { 'name' : 'Product 3' , 'price' : "1400"},
+    { 'name' : 'Product 4' , 'price' : "1040"},
+    { 'name' : 'Product 5' , 'price' : "2020"},
+    { 'name' : 'Product 6' , 'price' : "500"},
+
+  ] ;
+
   @override
-  _CounterScreenState createState() => _CounterScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _CounterScreenState extends State<CounterScreen> {
-  int count = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      count++;
-      if (count >= 5) {
-        _showDialog();
-      }
-    });
-  }
-
-  void _decrementCounter() {
-    setState(() {
-      if (count > 0) {
-        count--;
-      }
-    });
-  }
-
-  void _showDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Button pressed $count times"),
-          actions: <Widget>[
-            ElevatedButton(
-              child: Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
+class _HomeScreenState extends State<HomeScreen> {
+    double counter = 0;//setting counter value to 0
   @override
   Widget build(BuildContext context) {
+    //function to show alertDialog
+    MyAlertDialog(context,productName)
+    {
+      return showDialog(context: context, builder: (BuildContext context){return Expanded(child: AlertDialog(title: const Text('Congratulations!'),
+      content: Text("You've bought $counter $productName "),actions: [ElevatedButton(onPressed: (){Navigator.pop(context);}, child: Text('OK'))],));});
+    }
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Counter App'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Count:',
-              style: TextStyle(fontSize: 24),
-            ),
-            Text(
-              '$count',
-              style: TextStyle(fontSize: 48),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: _decrementCounter,
-                  child: Text('-',style: TextStyle(fontSize: 30),),
-                ),
-                SizedBox(width: 20),
-                ElevatedButton(
-                  onPressed: _incrementCounter,
-                  child: Text('+',style: TextStyle(fontSize: 30)),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      appBar: AppBar(title: const Text('Product List'),
+      centerTitle: true,),
+      body: ListView.separated(itemBuilder: (context , index){
+        return ListTile(
+          title: Text(widget.productDetails[index]['name']),
+        subtitle: Text(widget.productDetails[index]['price']),
+
+          trailing: Column(
+            children: [
+              Text('Counter : '),
+              const SizedBox(height: 3),
+              ElevatedButton(onPressed: (){
+               counter++;
+               if (counter==5)
+               {
+                 MyAlertDialog(context,widget.productDetails[index]['name']);
+               }
+               setState(() {});
+                print(counter);
+              },child: const Text('Buy Now'),),
+            ],
+          ),
+
+        );
+
+      }, separatorBuilder: (context , index){return const Divider();}, itemCount: widget.productDetails.length),
+
     );
   }
 }
