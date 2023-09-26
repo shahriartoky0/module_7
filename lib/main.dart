@@ -1,105 +1,91 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:module_7/style.dart';
 
 void main ()
 {
   runApp(MyApp());
 }
-
 class MyApp extends StatelessWidget{
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Shopping', home: HomeScreen(),debugShowCheckedModeBanner: false,);
+   return MaterialApp(title: 'Form Handling',home: HomeScreen(),);
   }
 
 }
-
-class HomeScreen extends StatefulWidget {
-
-
-  List <dynamic> productDetails =[
-    { 'name' : 'Product 1' , 'price' : "100", 'counter': 0},
-    { 'name' : 'Product 2' , 'price' : "200",'counter': 0},
-    { 'name' : 'Product 3' , 'price' : "1400",'counter': 0},
-    { 'name' : 'Product 4' , 'price' : "1040",'counter': 0},
-    { 'name' : 'Product 5' , 'price' : "1020",'counter': 0},
-    { 'name' : 'Product 6' , 'price' : "5220",'counter': 0},
-    { 'name' : 'Product 7' , 'price' : "5020",'counter': 0},
-    { 'name' : 'Product 8' , 'price' : "1200",'counter': 0},
-    { 'name' : 'Product 9' , 'price' : "5010",'counter': 0},
-    { 'name' : 'Product 10' , 'price' : "5050",'counter': 0},
-    { 'name' : 'Product 11' , 'price' : "570",'counter': 0},
-    { 'name' : 'Product 12' , 'price' : "800",'counter': 0},
-    { 'name' : 'Product 13' , 'price' : "6500",'counter': 0},
-    { 'name' : 'Product 14' , 'price' : "5560",'counter': 0},
-
-  ] ;
-
+class HomeScreen extends StatefulWidget{
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<StatefulWidget> createState() {
+    return _HomeScreenUI();
+  }
 }
+class _HomeScreenUI extends State<HomeScreen>
+{
+  double calculated_bmi =0;
+  Map<String , double > bma = {'weight' : 0, 'height' : 0,} ;
+  InputonChange (inputKey, inputValue) {
+    bma.update(inputKey, (value) => double.parse(inputValue));
+  }
+  calculate_bmi (){
+    calculated_bmi = bma['weight']!/ bma['height']!;
 
-class _HomeScreenState extends State<HomeScreen> {
-    double counter = 0;//setting counter value to 0
+  }
   @override
   Widget build(BuildContext context) {
-    //function to show alertDialog
-    MyAlertDialog(context,productName)
-    {
-      return showDialog(context: context, builder: (BuildContext context){return Expanded(child: AlertDialog(title: const Text('Congratulations!'),
-      content: Text("You've bought 5 $productName "),actions: [ElevatedButton(onPressed: (){Navigator.pop(context);}, child: const Text('OK'))],));});
-    }
+
+   return Scaffold(
+     appBar: AppBar(title: const Text("Calculating BMA"),centerTitle: true,),
+     body:
+     Center(
+       child: Container(margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+         width: 500,
+         child: Column(
+           mainAxisAlignment: MainAxisAlignment.center,
+           children: [
+             Text('Calculate Your BMA',style: HeadlineText(),),
+             SizedBox(height: 40,),
+           TextFormField(onChanged: (value){InputonChange('weight',value);setState(() {});},decoration: AppInputDecoration('Weight in KG'),),
+           SizedBox(height: 10,),
+           TextFormField(onChanged: (value){InputonChange('height',value);setState(() {});},decoration: AppInputDecoration('Height in Meter'),),
+           SizedBox(height: 20,),
+           Container(width:double.infinity,child: ElevatedButton(onPressed: (){
+             calculate_bmi();
+             setState(() {});
+             Navigator.push(context, MaterialPageRoute(builder: (context)=>BmiShow(bmi_number: calculated_bmi)));
+             },style: AppButtonStyle(), child: const Text('Submit'),))
+         ],),
+       ),
+     ),
+   );
+  }
+}
+class BmiShow extends StatelessWidget{
+  double bmi_number = 0;
+   BmiShow({super.key, required this.bmi_number});
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Product List'),
-      centerTitle: true,),
-      body:
-      ListView.separated(itemBuilder: (context , index){
-      // int productCounter = widget.productDetails[index]['counter'];
-        return ListTile(
-          title: Text(widget.productDetails[index]['name']),
-        subtitle: Text(widget.productDetails[index]['price']),
-
-          trailing: Column(
-            children: [
-              Text('Counter :$counter '),
-              const SizedBox(height: 3),
-              ElevatedButton(onPressed: (){
-
-               setState(() {counter++;
-               widget.productDetails[index]['counter']++;
-
-               if (widget.productDetails[index]['counter']==5)
-               {
-                 MyAlertDialog(context,widget.productDetails[index]['name']);
-                 widget.productDetails[index]['counter'] = 0 ;
-               }});
-                print(counter);
-                print(widget.productDetails[index]['counter']);
-              },child: const Text('Buy Now'),),
-            ],
-          ),
-
-        );
-
-      }, separatorBuilder: (context , index){return const Divider();}, itemCount: widget.productDetails.length),
-      floatingActionButton:FloatingActionButton(child: Icon(Icons.shopping_cart),onPressed: (){Navigator.push(context,MaterialPageRoute(builder: (context)=>cartPage(totalProducts: counter,)));},)
-    );
-  }
-}
-class cartPage extends StatelessWidget{
-  double totalProducts =0;
-   cartPage({super.key,required this.totalProducts});
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(  appBar: AppBar(title: const Text('Cart'),
-      centerTitle: true,),
+      appBar: AppBar(title: const Text("Calculating BMA"),centerTitle: true,),
       body: Center(
-        child: Text('Total Products : $totalProducts'),
-    )
-      ,);
+        child: Column(
+          children: [
+            if (bmi_number > 25)
+              Text(
+                'Your BMI is $bmi_number, which indicates that you are overweight.',
+                style: TextStyle(fontSize: 20),
+              )
+            else
+              Text(
+                'Your BMI is $bmi_number, which is within the healthy range.',
+                style: TextStyle(fontSize: 20),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
 }
