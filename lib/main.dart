@@ -10,7 +10,7 @@ void main ()
 class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Shopping', home: HomeScreen(),);
+    return MaterialApp(title: 'Shopping', home: HomeScreen(),debugShowCheckedModeBanner: false,);
   }
 
 }
@@ -23,8 +23,16 @@ class HomeScreen extends StatefulWidget {
     { 'name' : 'Product 2' , 'price' : "200",'counter': 0},
     { 'name' : 'Product 3' , 'price' : "1400",'counter': 0},
     { 'name' : 'Product 4' , 'price' : "1040",'counter': 0},
-    { 'name' : 'Product 5' , 'price' : "2020",'counter': 0},
-    { 'name' : 'Product 6' , 'price' : "500",'counter': 0},
+    { 'name' : 'Product 5' , 'price' : "1020",'counter': 0},
+    { 'name' : 'Product 6' , 'price' : "5220",'counter': 0},
+    { 'name' : 'Product 7' , 'price' : "5020",'counter': 0},
+    { 'name' : 'Product 8' , 'price' : "1200",'counter': 0},
+    { 'name' : 'Product 9' , 'price' : "5010",'counter': 0},
+    { 'name' : 'Product 10' , 'price' : "5050",'counter': 0},
+    { 'name' : 'Product 11' , 'price' : "570",'counter': 0},
+    { 'name' : 'Product 12' , 'price' : "800",'counter': 0},
+    { 'name' : 'Product 13' , 'price' : "6500",'counter': 0},
+    { 'name' : 'Product 14' , 'price' : "5560",'counter': 0},
 
   ] ;
 
@@ -54,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           trailing: Column(
             children: [
-              Text('Counter : '),
+              Text('Counter :$counter '),
               const SizedBox(height: 3),
               ElevatedButton(onPressed: (){
 
@@ -75,7 +83,23 @@ class _HomeScreenState extends State<HomeScreen> {
         );
 
       }, separatorBuilder: (context , index){return const Divider();}, itemCount: widget.productDetails.length),
-
+      floatingActionButton:FloatingActionButton(child: Icon(Icons.shopping_cart),onPressed: (){Navigator.push(context,MaterialPageRoute(builder: (context)=>cartPage(totalProducts: counter,)));},)
     );
   }
+}
+class cartPage extends StatelessWidget{
+  double totalProducts =0;
+   cartPage({super.key,required this.totalProducts});
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(  appBar: AppBar(title: const Text('Cart'),
+      centerTitle: true,),
+      body: Center(
+        child: Text('Total Products : $totalProducts'),
+    )
+      ,);
+  }
+
 }

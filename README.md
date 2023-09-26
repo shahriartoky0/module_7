@@ -1,3 +1,4 @@
 ## The App view is like this : 
-![AppView!](appview.png)
-![AppView!](appview2.png)
+![AppView!](appView.png)
+![AppView!](appView2.png)
+![AppView!](appView3.png)
